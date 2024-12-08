@@ -30,6 +30,7 @@ const AdminPanel = () => {
       </ul>
     </div>
   );
+  
 };
 
 export default AdminPanel;
