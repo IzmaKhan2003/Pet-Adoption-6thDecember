@@ -134,6 +134,12 @@ const AdminPanel = () => {
     }
   };
 
+  const handleSelectPet = (petId, isSelected) => {
+    setSelectedRequests((prev) =>
+      isSelected ? [...prev, petId] : prev.filter((id) => id !== petId)
+    );
+  };
+
   const handleUpdatePet = async (updatedPet) => {
     try {
       const token = localStorage.getItem("authToken");
