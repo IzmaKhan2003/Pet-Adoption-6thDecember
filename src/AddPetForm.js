@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 
 const AddPetForm = ({ onAddPet }) => {
@@ -26,7 +25,7 @@ const AddPetForm = ({ onAddPet }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (
       !petDetails.PetName ||
       !petDetails.PetType ||
@@ -40,8 +39,9 @@ const AddPetForm = ({ onAddPet }) => {
       alert("Please fill out all fields.");
       return;
     }
-  
+
     try {
+      setIsLoading(true);
       const response = await fetch("http://localhost:5000/api/create-pet", {
         method: "POST",
         headers: {
@@ -50,128 +50,212 @@ const AddPetForm = ({ onAddPet }) => {
         },
         body: JSON.stringify(petDetails),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
       }
-  
-      const result = await response.json(); // Expect JSON here
-      alert(result.message); // Use the message from the JSON response
-      onAddPet(result.pet); // Update the UI with the newly added pet
+
+      const result = await response.json();
+      alert(result.message);
+      onAddPet(result.pet);
     } catch (error) {
       console.error("Error adding pet:", error);
       alert(`Failed to add pet: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="add-pet-form">
-      <h2>Add New Pet</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Pet Name:</label>
+    <div style={styles.container}>
+      <h2 style={styles.title}>Add New Pet</h2>
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <div style={styles.inputGroup}>
+          <label style={styles.label}>Pet Name:</label>
           <input
             type="text"
             name="PetName"
             value={petDetails.PetName}
             onChange={handleChange}
             required
+            style={styles.input}
+            placeholder="Enter pet name"
           />
         </div>
-        <div>
-          <label>Pet Type:</label>
+        <div style={styles.inputGroup}>
+          <label style={styles.label}>Pet Type:</label>
           <input
             type="text"
             name="PetType"
             value={petDetails.PetType}
             onChange={handleChange}
             required
+            style={styles.input}
+            placeholder="Enter pet type"
           />
         </div>
-        <div>
-          <label>Breed:</label>
+        <div style={styles.inputGroup}>
+          <label style={styles.label}>Breed:</label>
           <input
             type="text"
             name="Breed"
             value={petDetails.Breed}
             onChange={handleChange}
             required
+            style={styles.input}
+            placeholder="Enter breed"
           />
         </div>
-        <div>
-          <label>Age:</label>
+        <div style={styles.inputGroup}>
+          <label style={styles.label}>Age:</label>
           <input
             type="number"
             name="Age"
             value={petDetails.Age}
             onChange={handleChange}
             required
+            style={styles.input}
+            placeholder="Enter age"
           />
         </div>
-        <div>
-          <label>Pet Size:</label>
+        <div style={styles.inputGroup}>
+          <label style={styles.label}>Pet Size:</label>
           <input
             type="text"
             name="PetSize"
             value={petDetails.PetSize}
             onChange={handleChange}
             required
+            style={styles.input}
+            placeholder="Enter pet size"
           />
         </div>
-        <div>
-          <label>Gender:</label>
+        <div style={styles.inputGroup}>
+          <label style={styles.label}>Gender:</label>
           <select
             name="Gender"
             value={petDetails.Gender}
             onChange={handleChange}
             required
+            style={styles.select}
           >
             <option value="">Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
           </select>
         </div>
-        <div>
-          <label>Health Status:</label>
+        <div style={styles.inputGroup}>
+          <label style={styles.label}>Health Status:</label>
           <input
             type="text"
             name="HealthStatus"
             value={petDetails.HealthStatus}
             onChange={handleChange}
             required
+            style={styles.input}
+            placeholder="Enter health status"
           />
         </div>
-        <div>
-          <label>Vaccination Status:</label>
+        <div style={styles.inputGroup}>
+          <label style={styles.label}>Vaccination Status:</label>
           <select
             name="VaccinationStatus"
             value={petDetails.VaccinationStatus}
             onChange={handleChange}
             required
+            style={styles.select}
           >
-            <option value="">Select Status</option>
+            <option value="">Select Vaccination Status</option>
             <option value="Vaccinated">Vaccinated</option>
             <option value="Not Vaccinated">Not Vaccinated</option>
           </select>
         </div>
-        <div>
-          <label>Availability:</label>
+        <div style={styles.inputGroup}>
+          <label style={styles.label}>Availability:</label>
           <select
             name="Availability"
             value={petDetails.Availability}
             onChange={handleChange}
+            style={styles.select}
           >
             <option value="Available">Available</option>
             <option value="Adopted">Adopted</option>
           </select>
         </div>
-        <button type="submit" disabled={isLoading}>
+        <button
+          type="submit"
+          disabled={isLoading}
+          style={isLoading ? styles.loadingButton : styles.submitButton}
+        >
           {isLoading ? "Adding..." : "Add Pet"}
         </button>
       </form>
     </div>
   );
+};
+
+const styles = {
+  container: {
+    maxWidth: "500px",
+    margin: "30px auto",
+    padding: "20px",
+    backgroundColor: "#f0f4f8",
+    borderRadius: "10px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  },
+  title: {
+    textAlign: "center",
+    fontSize: "1.8rem",
+    color: "#333",
+    marginBottom: "20px",
+  },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px",
+  },
+  inputGroup: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "5px",
+  },
+  label: {
+    fontSize: "1rem",
+    fontWeight: "600",
+    color: "#555",
+  },
+  input: {
+    padding: "10px",
+    fontSize: "1rem",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+  },
+  select: {
+    padding: "10px",
+    fontSize: "1rem",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+  },
+  submitButton: {
+    padding: "10px 20px",
+    fontSize: "1rem",
+    color: "#fff",
+    backgroundColor: "#28a745",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease",
+  },
+  loadingButton: {
+    padding: "10px 20px",
+    fontSize: "1rem",
+    color: "#fff",
+    backgroundColor: "#6c757d",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "not-allowed",
+  },
 };
 
 export default AddPetForm;

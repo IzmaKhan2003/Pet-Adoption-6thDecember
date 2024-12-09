@@ -19,25 +19,51 @@ import PetDetailsModal from "./PetDetailsModal";
 import "./styles.css"; // Create a separate CSS file for animations
 
 function addImagesToPets(pets) {
-  // List of random pet image URLs
-  const petImages= [
+  // Hardcoded image URLs for the first 30 pets
+  const hardcodedPetImages = [
     "https://placedog.net/400/300",
-    "https://placekitten.com/400/300",
-    "https://random.dog/woof.json",
-    "https://cataas.com/cat",
-    "https://loremflickr.com/320/240/dog",
-    "https://loremflickr.com/320/240/cat",
-    "https://placedog.net/500/400",
-    "https://placekitten.com/500/400",
-    "https://loremflickr.com/320/240/pet",
-    "https://source.unsplash.com/featured/?pet"
+    "https://placedog.net/401/300",
+    "https://placedog.net/402/300",
+    "https://placedog.net/403/300",
+    "https://placedog.net/404/300",
+    "https://placedog.net/405/300",
+    "https://placedog.net/406/300",
+    "https://placedog.net/407/300",
+    "https://placedog.net/408/300",
+    "https://placedog.net/409/300",
+    "https://placedog.net/410/300",
+    "https://placedog.net/411/300",
+    "https://placedog.net/412/300",
+    "https://placedog.net/413/300",
+    "https://placedog.net/414/300",
+    "https://placedog.net/415/300",
+    "https://placedog.net/416/300",
+    "https://placedog.net/417/300",
+    "https://placedog.net/418/300",
+    "https://placedog.net/419/300",
+    "https://placedog.net/420/300",
+    "https://placedog.net/421/300",
+    "https://placedog.net/422/300",
+    "https://placedog.net/423/300",
+    "https://placedog.net/424/300",
+    "https://placedog.net/425/300",
+    "https://placedog.net/426/300",
+    "https://placedog.net/427/300",
+    "https://placedog.net/428/300",
+    "https://placedog.net/429/300",
   ];
-  
 
-  // Add a random image to each pet object
-  return pets.map((pet) => ({
+  // Dynamically generate image URLs for pets beyond the first 30
+  const dynamicPetImage = (index) =>
+    `https://placedog.net/${400 + (index % 100)}/${300 + (index % 50)}`;
+
+  // Assign images to pets
+  return pets.map((pet, index) => ({
     ...pet,
-    image: petImages[Math.floor(Math.random() * petImages.length)]
+    image:
+      index < hardcodedPetImages.length
+        ? hardcodedPetImages[index]
+        : dynamicPetImage(index),
   }));
 }
 
@@ -141,73 +167,123 @@ function Home({ onRequestSubmit = () => {} }) {
     setSelectedPet(null);
   };
 
+  const handleRequestSubmit = async (formData) => {
+    const adoptionRequest = {
+      petId: selectedPet.id, // Assuming `id` is the key for pet ID
+      email: formData.email,
+      comments: formData.comments,
+    };
+  
+    try {
+      const response = await fetch("http://localhost:5000/api/adoption-requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(adoptionRequest),
+      });
+  
+      if (response.ok) {
+        alert("Adoption request submitted successfully!");
+      } else {
+        const error = await response.json();
+        console.error("Failed to submit adoption request:", error);
+        alert("Failed to submit adoption request. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error while submitting adoption request:", error);
+      alert("An error occurred. Please check your internet connection and try again.");
+    }
+  };
+  
  
   return (
     
     <div>
-      {/* Hero Section */}
+    {/* Hero Section */}
+    <div
+style={{
+  position: "absolute",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "50%", // Adjusted height
+  backgroundImage: `url('https://images.pexels.com/photos/4453160/pexels-photo-4453160.jpeg')`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  zIndex: 1,
+}}
+></div>
+<div
+style={{
+  position: "absolute",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "50%", // Match the background height
+  backgroundImage: "linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.3))",
+  zIndex: 2,
+}}
+></div>
       <div
-        style={{
-          position: "relative",
-          minHeight: "100vh",
-          backgroundImage: `url('https://t3.ftcdn.net/jpg/07/06/99/66/240_F_706996604_gJwDZH3g2GV27TNdnHvUsmUsP7SzQody.jpg')`,
-          backgroundSize: "100%",
-          backgroundPosition: "center",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundBlendMode: "color-dodge",
-            zIndex: 1,
-          }}
-        ></div>
-        <div
-          style={{
-            position: "relative",
-            zIndex: 2,
-            color: "white",
-            textAlign: "center",
-            padding: "20px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100%",
-          }}
-        >
-          <Typography
-            variant="h2"
-            style={{
-              fontWeight: "bold",
-              textShadow: "3px 3px 10px rgba(0, 0, 0, 0.8)",
-              letterSpacing: "2px",
-              marginBottom: "20px",
-              color: "#FFD777",
-            }}
-          >
-            Find Your New Furry Best Friend!
-          </Typography>
+  style={{
+    position: "relative",
+    zIndex: 3,
+    color: "#000",
+    textAlign: "center",
+    padding: "40px 20px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+  }}
+>
+  <Typography
+    variant="h1"
+    style={{
+      fontWeight: "bold",
+      textShadow: "2px 2px 8px rgba(255, 255, 255, 0.5)",
+      letterSpacing: "2px",
+      marginBottom: "20px",
+      color: "#3B3A3A", // Neutral dark gray for bold elegance
+      animation: "fadeIn 1s ease-out",
+    }}
+  >
+    Find Your Forever Friend!
+  </Typography>
 
-          <Typography
-            variant="h6"
-            style={{
-              maxWidth: "600px",
-              color: "#FFD777",
-              textShadow: "2px 2px 5px rgba(0, 0, 0, 0.7)",
-              lineHeight: "1.6",
-            }}
-          >
-            Welcome to the Pet Adoption System, where unconditional love awaits
-            you. Explore adorable pets, each with a story, and give them a
-            loving forever home. Scroll down to meet your new furry companion!
-          </Typography>
-        </div>
-      </div>
+  <Typography
+    variant="h5"
+    style={{
+      maxWidth: "700px",
+      color: "#FFFFF", // Soft gray for body text
+      textShadow: "1px 1px 6px rgba(255, 255, 255, 0)",
+      lineHeight: "1.6",
+      fontWeight: "500",
+      animation: "slideUp 1s ease-out",
+    }}
+  >
+    Dive into the world of unconditional love. Explore our pet adoption system and meet adorable animals waiting to be part of your life.
+  </Typography>
+
+  <button
+    style={{
+      marginTop: "20px",
+      padding: "10px 30px",
+      fontSize: "16px",
+      color: "#FFF",
+      backgroundColor: "#FF6347", // Warm coral color for action button
+      border: "none",
+      borderRadius: "20px",
+      boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.3)",
+      cursor: "pointer",
+      transition: "all 0.3s ease-in-out",
+    }}
+    onMouseEnter={(e) => (e.target.style.backgroundColor = "#FF7F50")}
+    onMouseLeave={(e) => (e.target.style.backgroundColor = "#FF6347")}
+  >
+    Browse Pets
+  </button>
+</div>
 
       {/* Pet Cards Section */}
       <div
@@ -312,18 +388,12 @@ function Home({ onRequestSubmit = () => {} }) {
           <Button
             variant="contained"
             color="secondary"
-            style={{ marginRight: "10px" }}
+            style={{ marginRight: "150px", marginLeft: "30px", width: "500", marginTop: "10px" }}
             onClick={() => handleFormOpen(pet)}
           >
             Adopt Me
           </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => handleDetailsOpen(pet)}
-          >
-            View Details
-          </Button>
+          
         </CardContent>
       </Card>
     </Grid>
@@ -333,29 +403,31 @@ function Home({ onRequestSubmit = () => {} }) {
 
         {/* Adoption Form Modal */}
         <Modal open={openForm} onClose={handleFormClose}>
-          <div
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "90%",
-              maxWidth: "400px",
-              backgroundColor: "#fff",
-              borderRadius: "10px",
-              padding: "20px",
-              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
-            }}
-          >
-            <AdoptionForm
-              onSubmit={(data) => {
-                onRequestSubmit({ ...data, pet: selectedPet });
-                handleFormClose();
-              }}
-              onClose={handleFormClose}
-            />
-          </div>
-        </Modal>
+  <div
+    style={{
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      width: "90%",
+      maxWidth: "400px",
+      backgroundColor: "#fff",
+      borderRadius: "10px",
+      padding: "20px",
+      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+    }}
+  >
+    <AdoptionForm
+  onSubmit={(data) => {
+    handleRequestSubmit(data); // Call the updated function
+    handleFormClose();
+  }}
+  onClose={handleFormClose}
+/>
+
+  </div>
+</Modal>
+
 
         {/* Pet Details Modal */}
         <Modal open={openDetails} onClose={handleDetailsClose}>
